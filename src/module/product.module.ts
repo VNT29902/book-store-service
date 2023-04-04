@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ProductController } from '../controller/product.controller';
 import { ProductService } from '../service/product.service';
-import { FireStoreModule } from './firestore.module';
+import { RepositoryModule } from './repository.module';
 
 @Module({
-  imports: [FireStoreModule],
+  imports: [RepositoryModule],
   controllers: [ProductController],
   providers: [ProductService],
 })

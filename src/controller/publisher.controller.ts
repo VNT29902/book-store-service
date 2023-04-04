@@ -8,7 +8,7 @@ export class PublisherController {
   constructor(private readonly appService: PublisherService) {}
 
   @Get()
-  getPublisher(): Publisher[] {
+  async getPublisher(): Promise<Publisher[]> {
     return this.appService.getPublishers();
   }
 }

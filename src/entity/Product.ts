@@ -1,8 +1,6 @@
-import { Collection } from 'fireorm';
+import { Timestamp } from 'firebase-admin/firestore';
 
-@Collection()
 export class Product {
-  id: string;
   name: string;
   sortingAlias: string;
   price: number;
@@ -10,9 +8,9 @@ export class Product {
   images: string[];
   size: string;
   publisher: string;
-  publishDate: Date;
-  createdDate: Date;
-  updatedDate: Date;
-  deletedDate: Date;
+  publishDate: Timestamp;
+  createdDate: Timestamp;
+  updatedDate: Timestamp;
+  deletedDate: Timestamp;
   isDeleted: boolean;
 }
