@@ -14,9 +14,52 @@ export class ProductRepository {
     );
   }
 
+  public async getProductByID(productID: string): Promise<Product> {
+    return this.fireStoreService.getCollectionByCollectionIDAndDocumentID<Product>(
+      'product',
+      productID,
+    );
+  }
+
+  public async getProductByPublisherID(
+    publisherID: string,
+  ): Promise<Product[]> {
+    console.log('Method: getProductByPublisherID');
+    const dbConnection = this.fireStoreService
+      .getConnection()
+      .collection('product');
+    const products = [];
+    const snapshot = await dbConnection
+      .where('publisher', '==', publisherID)
+      .get();
+
+    if (snapshot.empty) {
+      console.log('No matching documents.');
+      return;
+    }
+
+    snapshot.forEach((doc) => {
+      console.log(doc.id, '=>', doc.data());
+      products.push(doc.data());
+    });
+
+    return products;
+  }
+
   public async createNewProduct<Product>(data: Product): Promise<string> {
     return this.fireStoreService.createNewDocumentToCollectionID(
       'product',
+      data,
+    );
+  }
+
+  public async updateProductByDocumentID<Product>(
+    documentID: string,
+    data: Product,
+  ): Promise<string> {
+    return this.fireStoreService.updateDocumentByID(
+      'product',
+      documentID,
       data,
     );
   }

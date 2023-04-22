@@ -33,21 +33,22 @@ export class FireStoreRepository {
   }
 
   public async getCollectionByCollectionID<Type>(
-    documentID: string,
+    collectionID: string,
   ): Promise<Type[]> {
     console.log('---------------------------------');
-    console.log('Get collection', documentID);
+    console.log('Get collection', collectionID);
 
     const dbConnection = this.getConnection();
-    const productRef = dbConnection.collection(documentID);
+    const productRef = dbConnection.collection(collectionID);
     const snapshot = await productRef.get();
     const products = [];
 
     if (snapshot.empty) {
-      console.log('No matching documents: ', documentID);
+      console.log('No matching documents: ', collectionID);
     } else {
       snapshot.forEach((doc) => {
         const data = doc.data();
+        data.documentID = doc.id;
         console.log(doc.id, '=>', data);
         products.push(data);
       });
@@ -55,6 +56,26 @@ export class FireStoreRepository {
 
     console.log('List of documents: ', products.length);
     return products;
+  }
+
+  public async getCollectionByCollectionIDAndDocumentID<Type>(
+    collectionID: string,
+    documentID: string,
+  ): Promise<Type> {
+    console.log('---------------------------------');
+    console.log('Get collection = ', collectionID, 'documentID = ', documentID);
+
+    const dbConnection = this.getConnection();
+    const productRef = dbConnection.collection(collectionID).doc(documentID);
+    const snapshot = await productRef.get();
+
+    if (!snapshot.exists) {
+      console.log('No such document!');
+    } else {
+      return snapshot.data as Type;
+    }
+
+    return <Type>{};
   }
 
   public async createNewDocumentToCollectionID<Type>(
@@ -67,5 +88,20 @@ export class FireStoreRepository {
 
     console.log('Create new', collectionID, 'success:', result.id);
     return result.id;
+  }
+
+  public async updateDocumentByID<Type>(
+    collectionID: string,
+    documentID: string,
+    data: Type,
+  ): Promise<string> {
+    const dbConnection = this.getConnection();
+
+    const snapshot = await dbConnection
+      .collection(collectionID)
+      .doc(documentID);
+
+    snapshot.update({ data });
+    return documentID;
   }
 }

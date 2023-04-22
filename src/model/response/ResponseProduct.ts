@@ -1,4 +1,5 @@
-export interface Product {
+export interface ResponseProduct {
+  documentID: string;
   name?: string;
   sortingAlias?: string;
   price?: number;
